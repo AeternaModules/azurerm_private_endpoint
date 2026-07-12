@@ -41,49 +41,17 @@ EOT
       request_message                   = optional(string)
       subresource_names                 = optional(list(string))
     })
-    ip_configuration = optional(object({
+    ip_configuration = optional(list(object({
       member_name        = optional(string)
       name               = string
       private_ip_address = string
       subresource_name   = optional(string)
-    }))
+    })))
     private_dns_zone_group = optional(object({
       name                 = string
       private_dns_zone_ids = list(string)
     }))
   }))
-  validation {
-    condition = alltrue([
-      for k, v in var.private_endpoints : (
-        v.private_service_connection.request_message == null || (length(v.private_service_connection.request_message) >= 1 && length(v.private_service_connection.request_message) <= 140)
-      )
-    ])
-    error_message = "must be between 1 and 140 characters"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.private_endpoints : (
-        v.ip_configuration == null || (length(v.ip_configuration.private_ip_address) > 0)
-      )
-    ])
-    error_message = "must not be empty"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.private_endpoints : (
-        v.ip_configuration == null || (v.ip_configuration.subresource_name == null || (length(v.ip_configuration.subresource_name) > 0))
-      )
-    ])
-    error_message = "must not be empty"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.private_endpoints : (
-        v.ip_configuration == null || (v.ip_configuration.member_name == null || (length(v.ip_configuration.member_name) > 0))
-      )
-    ])
-    error_message = "must not be empty"
-  }
   # --- Unconfirmed validation candidates, derived from azurerm_private_endpoint's provider source ---
   # Not auto-enabled: either a bespoke provider validator we can't safely translate,
   # or a path that crosses a list-typed block (needs its own for_each wrapping).
@@ -162,6 +130,9 @@ EOT
   #   condition: length(value) == 0
   #   message:   [from validate.PrivateLinkSubResourceName: invalid when len(value) != 0]
   #   source:    [from validate.PrivateLinkSubResourceName: invalid when len(value) != 0]
+  # path: private_service_connection.request_message
+  #   condition: length(value) >= 1 && length(value) <= 140
+  #   message:   must be between 1 and 140 characters
   # path: ip_configuration.name
   #   source:    [from validate.PrivateLinkName] !ok
   # path: ip_configuration.name
@@ -172,6 +143,15 @@ EOT
   #   source:    [from validate.PrivateLinkName] !m
   # path: ip_configuration.name
   #   source:    [from validate.PrivateLinkName] !m
+  # path: ip_configuration.private_ip_address
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: ip_configuration.subresource_name
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: ip_configuration.member_name
+  #   condition: length(value) > 0
+  #   message:   must not be empty
   # path: tags
   #   condition: length(value) <= 50
   #   message:   [from tags.Validate: invalid when len(value) > 50]

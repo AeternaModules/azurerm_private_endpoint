@@ -18,7 +18,7 @@ resource "azurerm_private_endpoint" "private_endpoints" {
   }
 
   dynamic "ip_configuration" {
-    for_each = each.value.ip_configuration != null ? [each.value.ip_configuration] : []
+    for_each = each.value.ip_configuration != null ? each.value.ip_configuration : []
     content {
       member_name        = ip_configuration.value.member_name
       name               = ip_configuration.value.name
