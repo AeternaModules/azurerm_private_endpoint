@@ -1,3 +1,7 @@
+output "private_endpoints_id" {
+  description = "Map of id values across all private_endpoints, keyed the same as var.private_endpoints"
+  value       = { for k, v in azurerm_private_endpoint.private_endpoints : k => v.id }
+}
 output "private_endpoints_custom_dns_configs" {
   description = "Map of custom_dns_configs values across all private_endpoints, keyed the same as var.private_endpoints"
   value       = { for k, v in azurerm_private_endpoint.private_endpoints : k => v.custom_dns_configs }
