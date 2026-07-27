@@ -15,6 +15,7 @@ Required:
         - subresource_names (optional)
 Optional:
     - custom_network_interface_name
+    - edge_zone
     - tags
     - ip_configuration (block):
         - member_name (optional)
@@ -32,6 +33,7 @@ EOT
     resource_group_name           = string
     subnet_id                     = string
     custom_network_interface_name = optional(string)
+    edge_zone                     = optional(string)
     tags                          = optional(map(string))
     private_service_connection = object({
       is_manual_connection              = bool
@@ -59,6 +61,14 @@ EOT
       )
     ])
     error_message = "[from validate.PrivateLinkName: invalid when len(value) == 1]"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.private_endpoints : (
+        v.edge_zone == null || (length(v.edge_zone) > 0)
+      )
+    ])
+    error_message = "must not be empty"
   }
   validation {
     condition = alltrue([

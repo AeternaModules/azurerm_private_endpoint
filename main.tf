@@ -6,6 +6,7 @@ resource "azurerm_private_endpoint" "private_endpoints" {
   resource_group_name           = each.value.resource_group_name
   subnet_id                     = each.value.subnet_id
   custom_network_interface_name = each.value.custom_network_interface_name
+  edge_zone                     = each.value.edge_zone
   tags                          = each.value.tags
 
   private_service_connection {

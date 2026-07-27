@@ -10,6 +10,10 @@ output "private_endpoints_custom_network_interface_name" {
   description = "Map of custom_network_interface_name values across all private_endpoints, keyed the same as var.private_endpoints"
   value       = { for k, v in azurerm_private_endpoint.private_endpoints : k => v.custom_network_interface_name if v.custom_network_interface_name != null && length(v.custom_network_interface_name) > 0 }
 }
+output "private_endpoints_edge_zone" {
+  description = "Map of edge_zone values across all private_endpoints, keyed the same as var.private_endpoints"
+  value       = { for k, v in azurerm_private_endpoint.private_endpoints : k => v.edge_zone if v.edge_zone != null && length(v.edge_zone) > 0 }
+}
 output "private_endpoints_ip_configuration" {
   description = "Map of ip_configuration values across all private_endpoints, keyed the same as var.private_endpoints"
   value       = { for k, v in azurerm_private_endpoint.private_endpoints : k => v.ip_configuration if v.ip_configuration != null && length(v.ip_configuration) > 0 }
