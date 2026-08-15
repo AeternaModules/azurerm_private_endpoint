@@ -36,11 +36,11 @@ output "private_endpoints_private_dns_zone_configs" {
 }
 output "private_endpoints_private_dns_zone_group" {
   description = "Map of private_dns_zone_group values across all private_endpoints, keyed the same as var.private_endpoints"
-  value       = { for k, v in azurerm_private_endpoint.private_endpoints : k => v.private_dns_zone_group if v.private_dns_zone_group != null && length(v.private_dns_zone_group) > 0 }
+  value       = { for k, v in azurerm_private_endpoint.private_endpoints : k => one(v.private_dns_zone_group) if v.private_dns_zone_group != null && length(v.private_dns_zone_group) > 0 }
 }
 output "private_endpoints_private_service_connection" {
   description = "Map of private_service_connection values across all private_endpoints, keyed the same as var.private_endpoints"
-  value       = { for k, v in azurerm_private_endpoint.private_endpoints : k => v.private_service_connection if v.private_service_connection != null && length(v.private_service_connection) > 0 }
+  value       = { for k, v in azurerm_private_endpoint.private_endpoints : k => one(v.private_service_connection) if v.private_service_connection != null && length(v.private_service_connection) > 0 }
 }
 output "private_endpoints_resource_group_name" {
   description = "Map of resource_group_name values across all private_endpoints, keyed the same as var.private_endpoints"
